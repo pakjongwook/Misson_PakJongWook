@@ -10,9 +10,9 @@ public class App {
     int cnt = 0;
 
     List<Quotation> quotations = new ArrayList<>();
+
     public void run() {
         System.out.println("=== 명언 ===");
-
 
 
         while (true) {
@@ -28,7 +28,7 @@ public class App {
                 selectQuotation();
             } else if (cmd.startsWith("삭제?")) {
                 deleteQuotation(cmd);
-            }else if (cmd.startsWith("수정?")) {
+            } else if (cmd.startsWith("수정?")) {
                 updateQuotation(cmd);
             } else {
                 System.out.println("올바른 명령어를 입력하세요.");
@@ -36,7 +36,7 @@ public class App {
         }
     }
 
-    void insertQuotation(){
+    void insertQuotation() {
         System.out.print("명언 : ");
         String content = sc.nextLine();
 
@@ -54,68 +54,69 @@ public class App {
 
     }
 
-    void selectQuotation(){
+    void selectQuotation() {
         System.out.println("번호 / 작가 / 명언");
 
         System.out.println("----------------------------------------");
 
-        if(quotations.isEmpty()){
+        if (quotations.isEmpty()) {
             System.out.println("등록된 명언이 없습니다.");
         }
 
-        for (int i = quotations.size()-1; i > -1; i--) {
+        for (int i = quotations.size() - 1; i > -1; i--) {
             Quotation quotation = quotations.get(i);
             System.out.println(quotation.id + ". " + quotation.content + " (" + quotation.authorName + ")");
         }
     }
 
-    void deleteQuotation(String cmd){
+    void deleteQuotation(String cmd) {
 //        String idStr = cmd.replace("삭제?id=", "");
 //        int id = Integer.parseInt(idStr);
-        String[] cmdBits = cmd.split("\\?",2);
-        String action = cmdBits[0];
-        String queryString = cmdBits[1];
+        int id = getParamAsInt(cmd, "id", 0);
 
-        String[] queryStringBits = queryString.split("&");
-
-        int id = 0;
-        for(int i = 0; i < queryStringBits.length; i++) {
-            String queryParamStr = queryStringBits[i];
-
-            String[] queryParamStrBits = queryParamStr.split("=",2);
-
-            String paramName = queryParamStrBits[0];
-            String paramValue = queryParamStrBits[1];
-
-            if (paramName.equals("id")) {
-                id = Integer.parseInt(paramValue);
-            }
+        if (id == 0) {
+            System.out.println("id를 입력해주세요.");
+            return;
         }
 
         System.out.printf("%d번 명언을 삭제합니다.\n", id);
     }
 
-    void updateQuotation(String cmd){
-        String[] cmdBits = cmd.split("\\?",2);
-        String action = cmdBits[0];
+    void updateQuotation(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+        if (id == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+            return; // 함수를 끝낸다.
+        }
+
+        System.out.printf("%d번 명언을 수정합니다.\n", id);
+    }
+
+    int getParamAsInt(String cmd, String paramName, int defaultValue) {
+        String[] cmdBits = cmd.split("\\?", 2);
         String queryString = cmdBits[1];
 
         String[] queryStringBits = queryString.split("&");
 
-        int id = 0;
-        for(int i = 0; i < queryStringBits.length; i++) {
+        for (int i = 0; i < queryStringBits.length; i++) {
             String queryParamStr = queryStringBits[i];
 
-            String[] queryParamStrBits = queryParamStr.split("=",2);
+            String[] queryParamStrBits = queryParamStr.split("=", 2);
 
-            String paramName = queryParamStrBits[0];
+            String _paramName = queryParamStrBits[0];
             String paramValue = queryParamStrBits[1];
 
-            if (paramName.equals("id")) {
-                id = Integer.parseInt(paramValue);
+            if (_paramName.equals(paramName)) {
+                try {
+                    // 문제가 없을 경우
+                    return Integer.parseInt(paramValue);
+                } catch (NumberFormatException e) {
+                    // 문제가 생긴 경우
+                    return defaultValue;
+                }
             }
         }
 
-        System.out.printf("%d번 명언을 수정합니다.\n", id);
+        return defaultValue;
     }
 }
