@@ -26,10 +26,10 @@ public class App {
                 insertQuotation();
             } else if (cmd.equals("목록")) {
                 selectQuotation();
-            } else if (cmd.equals("삭제?")) {
+            } else if (cmd.startsWith("삭제?")) {
                 deleteQuotation(cmd);
-            }else if (cmd.equals("수정")) {
-                updateQuotation();
+            }else if (cmd.startsWith("수정?")) {
+                updateQuotation(cmd);
             } else {
                 System.out.println("올바른 명령어를 입력하세요.");
             }
@@ -70,11 +70,52 @@ public class App {
     }
 
     void deleteQuotation(String cmd){
-        String idStr = cmd.replace("삭제?id=", "");
-        int id = Integer.parseInt(idStr);
+//        String idStr = cmd.replace("삭제?id=", "");
+//        int id = Integer.parseInt(idStr);
+        String[] cmdBits = cmd.split("\\?",2);
+        String action = cmdBits[0];
+        String queryString = cmdBits[1];
+
+        String[] queryStringBits = queryString.split("&");
+
+        int id = 0;
+        for(int i = 0; i < queryStringBits.length; i++) {
+            String queryParamStr = queryStringBits[i];
+
+            String[] queryParamStrBits = queryParamStr.split("=",2);
+
+            String paramName = queryParamStrBits[0];
+            String paramValue = queryParamStrBits[1];
+
+            if (paramName.equals("id")) {
+                id = Integer.parseInt(paramValue);
+            }
+        }
 
         System.out.printf("%d번 명언을 삭제합니다.\n", id);
     }
 
-    void updateQuotation(){}
+    void updateQuotation(String cmd){
+        String[] cmdBits = cmd.split("\\?",2);
+        String action = cmdBits[0];
+        String queryString = cmdBits[1];
+
+        String[] queryStringBits = queryString.split("&");
+
+        int id = 0;
+        for(int i = 0; i < queryStringBits.length; i++) {
+            String queryParamStr = queryStringBits[i];
+
+            String[] queryParamStrBits = queryParamStr.split("=",2);
+
+            String paramName = queryParamStrBits[0];
+            String paramValue = queryParamStrBits[1];
+
+            if (paramName.equals("id")) {
+                id = Integer.parseInt(paramValue);
+            }
+        }
+
+        System.out.printf("%d번 명언을 수정합니다.\n", id);
+    }
 }
