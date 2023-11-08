@@ -6,6 +6,8 @@ public class App {
     public void run() {
         System.out.println("=== 명언 ===");
 
+        int cnt = 0;
+
         while (true) {
             System.out.print("명령) ");
 
@@ -17,12 +19,16 @@ public class App {
             if (cmd.equals("종료")) {
                 break; // continue 무한루프 빠짐
             } else if (cmd.equals("등록")) {
+
                 System.out.print("명언 : ");
                 String content = sc.nextLine();
+
                 System.out.print("작가 : ");
                 String authorName = sc.nextLine();
 
-                System.out.println("1번 명언이 등록되었습니다.");
+                cnt++;
+
+                System.out.printf("%d번 명언이 등록되었습니다.\n", cnt);
 //                System.out.printf("명언 : %s , 작가 : %s\n", content, authorName);
 
             }
